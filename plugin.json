@@ -8,7 +8,7 @@
     "Language": "csharp",
     "Website": "https://github.com/hlaueriksson/ConductOfCode",
     "ExecuteFileName": "Community.PowerToys.Run.Plugin.Demo.dll",
-    "IcoPathDark": "Images\\demo.dark.png",
-    "IcoPathLight": "Images\\demo.light.png",
+    "IcoPathDark": "Images\\icon.dark.png",
+    "IcoPathLight": "Images\\icon.light.png",
     "DynamicLoading": false
 }
