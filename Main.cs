@@ -6,7 +6,7 @@ using Microsoft.PowerToys.Settings.UI.Library;
 using Wox.Plugin;
 using Wox.Plugin.Logger;
 
-namespace Community.PowerToys.Run.Plugin.Demo
+namespace Community.PowerToys.Run.Plugin.JohnnyDecimal
 {
     /// <summary>
     /// Main class of this plugin that implement all used interfaces.
@@ -21,7 +21,7 @@ namespace Community.PowerToys.Run.Plugin.Demo
         /// <summary>
         /// Name of the plugin.
         /// </summary>
-        public string Name => "Demo";
+        public string Name => "JohnnyDecimal";
 
         /// <summary>
         /// Description of the plugin.

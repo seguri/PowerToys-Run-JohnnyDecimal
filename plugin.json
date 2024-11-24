@@ -1,13 +1,13 @@
 {
     "ID": "FEAFCFE212C04174A6CA07DB644DDB86",
-    "ActionKeyword": "demo",
+    "ActionKeyword": "jd",
     "IsGlobal": false,
-    "Name": "Demo",
-    "Author": "hlaueriksson",
+    "Name": "JohnnyDecimal",
+    "Author": "seguri",
     "Version": "1.0.0",
     "Language": "csharp",
-    "Website": "https://github.com/hlaueriksson/ConductOfCode",
-    "ExecuteFileName": "Community.PowerToys.Run.Plugin.Demo.dll",
+    "Website": "https://github.com/seguri/PowerToys-Run-JohnnyDecimal",
+    "ExecuteFileName": "Community.PowerToys.Run.Plugin.JohnnyDecimal.dll",
     "IcoPathDark": "Images\\icon.dark.png",
     "IcoPathLight": "Images\\icon.light.png",
     "DynamicLoading": false
