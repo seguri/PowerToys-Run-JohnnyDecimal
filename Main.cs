@@ -16,7 +16,7 @@ namespace Community.PowerToys.Run.Plugin.Demo
         /// <summary>
         /// ID of the plugin.
         /// </summary>
-        public static string PluginID => "AE953C974C2241878F282EA18A7769E4";
+        public static string PluginID => "FEAFCFE212C04174A6CA07DB644DDB86";
 
         /// <summary>
         /// Name of the plugin.
