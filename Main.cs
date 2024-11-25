@@ -39,10 +39,20 @@ namespace Community.PowerToys.Run.Plugin.JohnnyDecimal
                 DisplayDescription = "Count spaces as characters",
                 PluginOptionType = PluginAdditionalOption.AdditionalOptionType.Checkbox,
                 Value = CountSpaces,
-            }
+            },
+            new()
+            {
+                Key = nameof(RootFolder),
+                DisplayLabel = "Root folder",
+                DisplayDescription = "The path to the Johnny.Decimal folder",
+                PluginOptionType = PluginAdditionalOption.AdditionalOptionType.Textbox,
+                TextValue = RootFolder,
+            },
         ];
 
         private bool CountSpaces { get; set; }
+
+        private string? RootFolder { get; set; }
 
         private PluginInitContext? Context { get; set; }
 
@@ -173,6 +183,7 @@ namespace Community.PowerToys.Run.Plugin.JohnnyDecimal
             Log.Info("UpdateSettings", GetType());
 
             CountSpaces = settings.AdditionalOptions.SingleOrDefault(x => x.Key == nameof(CountSpaces))?.Value ?? false;
+            RootFolder = settings.AdditionalOptions.SingleOrDefault(x => x.Key == nameof(RootFolder))?.TextValue ?? string.Empty;
         }
 
         /// <inheritdoc/>
