@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -71,7 +72,17 @@ namespace Community.PowerToys.Run.Plugin.JohnnyDecimal
         public List<Result> Query(Query query)
         {
             Log.Info("Query: " + query.Search, GetType());
-            Log.Info("Parsed ID: " + ParseId(query.Search), GetType());
+            var id = ParseId(query.Search);
+            if (string.IsNullOrEmpty(id))
+            {
+                Log.Debug("Query doesn't contain a valid Johnny.Decimal ID", GetType());
+                return [];
+            }
+            if (string.IsNullOrEmpty(RootFolder) || !Directory.Exists(RootFolder))
+            {
+                Log.Debug("Root folder is not set or does not exist", GetType());
+                return [];
+            }
 
             var words = query.Terms.Count;
             // Average rate for transcription: 32.5 words per minute
