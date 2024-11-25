@@ -70,46 +70,48 @@ namespace Community.PowerToys.Run.Plugin.JohnnyDecimal
         public List<Result> Query(Query query)
         {
             Log.Info("Query: " + query.Search, GetType());
+
+            List<Result> CreateResult(string title, string subTitle, string? contextData = null) => [
+                new()
+                {
+                    QueryTextDisplay = query.Search,
+                    IcoPath = IconPath,
+                    Title = title,
+                    SubTitle = subTitle,
+                    ContextData = contextData,
+                },
+            ];
+
             if (!JohnnyDecimalId.TryParse(query.Search, out var johnnyDecimalId))
             {
-                Log.Debug("Query doesn't contain a valid Johnny.Decimal ID", GetType());
-                return [];
+                return CreateResult("No results found", "Please insert a valid JohnnyDecimal ID");
             }
             if (string.IsNullOrEmpty(RootFolder) || !Directory.Exists(RootFolder))
             {
-                Log.Debug("Root folder is not set or does not exist. Current value:" + RootFolder, GetType());
-                return [];
+                return CreateResult("No results found", "Please set the root folder in the plugin settings");
             }
 
-            var words = query.Terms.Count;
-            // Average rate for transcription: 32.5 words per minute
-            // https://en.wikipedia.org/wiki/Words_per_minute
-            var transcription = TimeSpan.FromMinutes(words / 32.5);
-            var minutes = $"{(int)transcription.TotalMinutes}:{transcription.Seconds:00}";
+            var di = new DirectoryInfo(RootFolder);
+            var areaPattern = $"{johnnyDecimalId.GetArea()}0-{johnnyDecimalId.GetArea()}9*"; // e.g. "10-19 Foo"
+            var areaDir = di.GetDirectories(areaPattern, SearchOption.TopDirectoryOnly).FirstOrDefault();
+            if (areaDir == null)
+            {
+                return CreateResult("No results found", $"Folder with Area '{areaPattern[..^1]}' not found");
+            }
+            var catPattern = $"{johnnyDecimalId.GetCategory()}*"; // e.g. "12 Foo"
+            var catDir = areaDir.GetDirectories(catPattern, SearchOption.TopDirectoryOnly).FirstOrDefault();
+            if (catDir == null)
+            {
+                return CreateResult("No results found", $"Folder with Category '{catPattern[..^1]}' not found");
+            }
+            var idPattern = $"{johnnyDecimalId.GetCategory()}.{johnnyDecimalId.GetId()}*"; // e.g. "12.34 Foo"
+            var idDir = catDir.GetDirectories(idPattern, SearchOption.TopDirectoryOnly).FirstOrDefault();
+            if (idDir == null)
+            {
+                return CreateResult("No results found", $"Folder with ID '{idPattern[..^1]}' not found");
+            }
 
-            var charactersWithSpaces = query.Search.Length;
-            var charactersWithoutSpaces = query.Terms.Sum(x => x.Length);
-
-            return [
-                new()
-                {
-                    QueryTextDisplay = query.Search,
-                    IcoPath = IconPath,
-                    Title = $"Words: {words}",
-                    SubTitle = $"Transcription: {minutes} minutes",
-                    ToolTipData = new ToolTipData("Words", $"{words} words\n{minutes} minutes for transcription\nAverage rate for transcription: 32.5 words per minute"),
-                    ContextData = (words, transcription),
-                },
-                new()
-                {
-                    QueryTextDisplay = query.Search,
-                    IcoPath = IconPath,
-                    Title = $"Characters: {(CountSpaces ? charactersWithSpaces : charactersWithoutSpaces)}",
-                    SubTitle = CountSpaces ? "With spaces" : "Without spaces",
-                    ToolTipData = new ToolTipData("Characters", $"{charactersWithSpaces} characters (with spaces)\n{charactersWithoutSpaces} characters (without spaces)"),
-                    ContextData = CountSpaces ? charactersWithSpaces : charactersWithoutSpaces,
-                },
-            ];
+            return CreateResult(idDir.Name, idDir.FullName, idDir.FullName);
         }
 
         /// <summary>
