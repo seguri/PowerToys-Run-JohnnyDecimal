@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -136,48 +137,29 @@ namespace Community.PowerToys.Run.Plugin.JohnnyDecimal
         {
             Log.Info("LoadContextMenus", GetType());
 
-            if (selectedResult?.ContextData is (int words, TimeSpan transcription))
-            {
-                return
-                [
+            if (selectedResult?.ContextData is string path) {
+                return [
                     new ContextMenuResult
                     {
                         PluginName = Name,
-                        Title = "Copy (Enter)",
+                        Title = "Open (Enter)",
                         FontFamily = "Segoe Fluent Icons,Segoe MDL2 Assets",
-                        Glyph = "\xE8C8", // Copy
+                        Glyph = "\xE838", // FolderOpen
                         AcceleratorKey = Key.Enter,
-                        Action = _ => CopyToClipboard(words.ToString()),
+                        Action = _ => OpenFolder(path),
                     },
                     new ContextMenuResult
                     {
                         PluginName = Name,
-                        Title = "Copy time (Ctrl+Enter)",
+                        Title = "Copy (Ctrl+Enter)",
                         FontFamily = "Segoe Fluent Icons,Segoe MDL2 Assets",
-                        Glyph = "\xE916", // Stopwatch
+                        Glyph = "\xE8C8", // Copy
                         AcceleratorKey = Key.Enter,
                         AcceleratorModifiers = ModifierKeys.Control,
-                        Action = _ => CopyToClipboard(transcription.ToString()),
+                        Action = _ => CopyToClipboard(path),
                     },
                 ];
             }
-
-            if (selectedResult?.ContextData is int characters)
-            {
-                return
-                [
-                    new ContextMenuResult
-                    {
-                        PluginName = Name,
-                        Title = "Copy (Enter)",
-                        FontFamily = "Segoe Fluent Icons,Segoe MDL2 Assets",
-                        Glyph = "\xE8C8", // Copy
-                        AcceleratorKey = Key.Enter,
-                        Action = _ => CopyToClipboard(characters.ToString()),
-                    },
-                ];
-            }
-
             return [];
         }
 
@@ -231,6 +213,21 @@ namespace Community.PowerToys.Run.Plugin.JohnnyDecimal
         private void UpdateIconPath(Theme theme) => IconPath = theme == Theme.Light || theme == Theme.HighContrastWhite ? Context?.CurrentPluginMetadata.IcoPathLight : Context?.CurrentPluginMetadata.IcoPathDark;
 
         private void OnThemeChanged(Theme currentTheme, Theme newTheme) => UpdateIconPath(newTheme);
+
+        private static bool OpenFolder(string? value)
+        {
+            if (value != null)
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = value,
+                    UseShellExecute = true,
+                    Verb = "open"
+                });
+            }
+
+            return true;
+        }
 
         private static bool CopyToClipboard(string? value)
         {
