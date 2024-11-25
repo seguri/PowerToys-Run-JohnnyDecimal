@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Text.RegularExpressions;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using ManagedCommon;
@@ -13,6 +14,8 @@ namespace Community.PowerToys.Run.Plugin.JohnnyDecimal
     /// </summary>
     public class Main : IPlugin, IContextMenu, ISettingProvider, IDisposable
     {
+        private static readonly Regex ID_REGEX = new(@"^(?<category>\d{2})[ ,./]?(?<id>\d{2})");
+
         /// <summary>
         /// ID of the plugin.
         /// </summary>
@@ -68,6 +71,7 @@ namespace Community.PowerToys.Run.Plugin.JohnnyDecimal
         public List<Result> Query(Query query)
         {
             Log.Info("Query: " + query.Search, GetType());
+            Log.Info("Parsed ID: " + ParseId(query.Search), GetType());
 
             var words = query.Terms.Count;
             // Average rate for transcription: 32.5 words per minute
@@ -226,6 +230,16 @@ namespace Community.PowerToys.Run.Plugin.JohnnyDecimal
             }
 
             return true;
+        }
+
+        private string ParseId(string search)
+        {
+            var match = ID_REGEX.Match(search);
+            if (match.Success)
+            {
+                return $"{match.Groups["category"].Value}.{match.Groups["id"].Value}";
+            }
+            return string.Empty;
         }
     }
 }
