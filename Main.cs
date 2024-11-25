@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Text.RegularExpressions;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using ManagedCommon;
@@ -68,6 +69,11 @@ namespace Community.PowerToys.Run.Plugin.JohnnyDecimal
         public List<Result> Query(Query query)
         {
             Log.Info("Query: " + query.Search, GetType());
+            if (!JohnnyDecimalId.TryParse(query.Search, out var johnnyDecimalId))
+            {
+                Log.Debug("Query doesn't contain a valid Johnny.Decimal ID", GetType());
+                return [];
+            }
 
             var words = query.Terms.Count;
             // Average rate for transcription: 32.5 words per minute
@@ -227,5 +233,39 @@ namespace Community.PowerToys.Run.Plugin.JohnnyDecimal
 
             return true;
         }
+    }
+
+    public class JohnnyDecimalId
+    {
+        private static readonly Regex ID_REGEX = new(@"^(?<category>\d{2})[ ,./]?(?<id>\d{2})");
+
+        public string Category { get; } = string.Empty;
+        public string Id { get; } = string.Empty;
+
+        private JohnnyDecimalId(string category, string id)
+        {
+            Category = category;
+            Id = id;
+        }
+
+        public static bool TryParse(string input, out JohnnyDecimalId result)
+        {
+            var match = ID_REGEX.Match(input);
+            if (match.Success)
+            {
+                var category = match.Groups["category"].Value;
+                var id = match.Groups["id"].Value;
+                result = new JohnnyDecimalId(category, id);
+                return true;
+            }
+            result = new JohnnyDecimalId(string.Empty, string.Empty);
+            return false;
+        }
+
+        public char GetArea() => string.IsNullOrWhiteSpace(Category) ? '\0' : Category[0];
+
+        public string GetCategory() => Category;
+
+        public string GetId() => Id;
     }
 }
