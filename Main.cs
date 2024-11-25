@@ -1,3 +1,4 @@
+using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -72,6 +73,11 @@ namespace Community.PowerToys.Run.Plugin.JohnnyDecimal
             if (!JohnnyDecimalId.TryParse(query.Search, out var johnnyDecimalId))
             {
                 Log.Debug("Query doesn't contain a valid Johnny.Decimal ID", GetType());
+                return [];
+            }
+            if (string.IsNullOrEmpty(RootFolder) || !Directory.Exists(RootFolder))
+            {
+                Log.Debug("Root folder is not set or does not exist. Current value:" + RootFolder, GetType());
                 return [];
             }
 
