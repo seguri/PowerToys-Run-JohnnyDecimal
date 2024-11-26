@@ -27,6 +27,9 @@ copy:
     Start-Sleep -Seconds 2
     Start-Process "C:\Program Files\PowerToys\PowerToys.exe"
 
+hash:
+    Get-ChildItem -Path "*.zip" | Select-Object Name, @{Name = "Hash"; Expression = { ((Get-FileHash -Path $_.FullName -Algorithm SHA256).Hash) }}
+
 repo:
     Start-Process "https://github.com/seguri/{{appname}}"
 

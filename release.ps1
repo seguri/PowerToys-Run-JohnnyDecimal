@@ -1,11 +1,8 @@
-# Read "Version" from plugin.json
+# Read "ExecuteName" and "Version" from plugin.json
 $pluginJson = Get-Content -Raw plugin.json | ConvertFrom-Json
+$baseName = [System.IO.Path]::GetFileNameWithoutExtension($pluginJson.ExecuteFilename)
 $version = $pluginJson.Version
-
-$sourceDir = "bin\x64\Release\net8.0-windows"
-$destinationDir = "bin\x64\Release\JohnnyDecimal"
-$zipPath = "Community.PowerToys.Run.Plugin.JohnnyDecimal-$version.zip"
-
+$platforms = @("x64", "arm64")
 $excludedFiles = @(
 	"PowerToys.Common.UI.dll"
 	"PowerToys.ManagedCommon.dll"
@@ -14,10 +11,15 @@ $excludedFiles = @(
 	"Wox.Plugin.dll"
 )
 
-Remove-Item -ErrorAction SilentlyContinue -Path $destinationDir -Recurse -Force
-Remove-Item -ErrorAction SilentlyContinue -Path $zipPath -Force
-Copy-Item -Path $sourceDir -Destination $destinationDir -Recurse -Force
-foreach ($file in $excludedFiles) {
-	Remove-Item -ErrorAction SilentlyContinue -Path "$destinationDir\$file" -Force
+foreach ($platform in $platforms) {
+	$sourceDir = "bin\$platform\Release\net8.0-windows"
+	$destinationDir = "bin\$platform\Release\JohnnyDecimal"
+	$zipPath = "$baseName-$version-$platform.zip"
+	Remove-Item -ErrorAction SilentlyContinue -Path $destinationDir -Recurse -Force
+	Remove-Item -ErrorAction SilentlyContinue -Path $zipPath -Force
+	Copy-Item -Path $sourceDir -Destination $destinationDir -Recurse -Force
+	foreach ($file in $excludedFiles) {
+		Remove-Item -ErrorAction SilentlyContinue -Path "$destinationDir\$file" -Force
+	}
+	Compress-Archive -Path $destinationDir -DestinationPath $zipPath -Force
 }
-Compress-Archive -Path $destinationDir -DestinationPath $zipPath -Force
