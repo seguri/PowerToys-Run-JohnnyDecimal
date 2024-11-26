@@ -4,7 +4,7 @@
     "IsGlobal": false,
     "Name": "JohnnyDecimal",
     "Author": "seguri",
-    "Version": "1.0.0",
+    "Version": "1.0.1",
     "Language": "csharp",
     "Website": "https://github.com/seguri/PowerToys-Run-JohnnyDecimal",
     "ExecuteFileName": "Community.PowerToys.Run.Plugin.JohnnyDecimal.dll",
