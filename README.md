@@ -10,6 +10,12 @@ Download the latest release and extract all files into `%LOCALAPPDATA%\Microsoft
 
 ![Installation](https://github.com/user-attachments/assets/9e2f306b-f8e3-46cf-9326-b1f87ad6d54e)
 
+## Configuration
+
+Set the fullpath to your JohnnyDecimal folder:
+
+![Configuration](https://github.com/user-attachments/assets/f6eae40f-ab6b-412d-84ab-feabfde6dc88)
+
 ## Usage
 
 Type `jd` followed by the number of the Johnny Decimal folder you want to navigate to.
