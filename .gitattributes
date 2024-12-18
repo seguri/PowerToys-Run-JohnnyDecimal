@@ -1,3 +1,13 @@
-* text=auto eol=lf
+* text=auto eol=lf !casesensitive
+
+*.md text encoding=utf-8
+*.txt text encoding=utf-8
+
+*.jpg binary
+*.png binary
+*.pdf binary
+
 *.cs text eol=crlf
 *.ps1 text diff eol=crlf
+
+*.zip export-ignore
