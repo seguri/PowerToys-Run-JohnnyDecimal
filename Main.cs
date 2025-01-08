@@ -83,19 +83,19 @@ namespace Community.PowerToys.Run.Plugin.JohnnyDecimal
             }
 
             var di = new DirectoryInfo(RootFolder);
-            var areaPattern = $"{johnnyDecimalId.GetArea()}0-{johnnyDecimalId.GetArea()}9*"; // e.g. "10-19 Foo"
+            var areaPattern = johnnyDecimalId.AreaGlob; // e.g. "10-19 Foo"
             var areaDir = di.GetDirectories(areaPattern, SearchOption.TopDirectoryOnly).FirstOrDefault();
             if (areaDir == null)
             {
                 return CreateResult("No results found", $"Folder with Area '{areaPattern[..^1]}' not found");
             }
-            var catPattern = $"{johnnyDecimalId.GetCategory()}*"; // e.g. "12 Foo"
+            var catPattern = johnnyDecimalId.CategoryGlob; // e.g. "12 Foo"
             var catDir = areaDir.GetDirectories(catPattern, SearchOption.TopDirectoryOnly).FirstOrDefault();
             if (catDir == null)
             {
                 return CreateResult("No results found", $"Folder with Category '{catPattern[..^1]}' not found");
             }
-            var idPattern = $"{johnnyDecimalId.GetCategory()}.{johnnyDecimalId.GetId()}*"; // e.g. "12.34 Foo"
+            var idPattern = johnnyDecimalId.IdGlob; // e.g. "12.34 Foo"
             var idDir = catDir.GetDirectories(idPattern, SearchOption.TopDirectoryOnly).FirstOrDefault();
             if (idDir == null)
             {
