@@ -62,7 +62,7 @@ namespace Community.PowerToys.Run.Plugin.JohnnyDecimal
         {
             Log.Info("Query: " + query.Search, GetType());
 
-            List<Result> CreateResult(string title, string subTitle, string? contextData = null) => [
+            Result CreateResult(string title, string subTitle, string? contextData = null) =>
                 new()
                 {
                     QueryTextDisplay = query.Search,
@@ -70,39 +70,17 @@ namespace Community.PowerToys.Run.Plugin.JohnnyDecimal
                     Title = title,
                     SubTitle = subTitle,
                     ContextData = contextData,
-                },
-            ];
+                };
 
             if (!JohnnyDecimalId.TryParse(query.Search, out var johnnyDecimalId))
             {
-                return CreateResult("No results found", "Please insert a valid JohnnyDecimal ID");
+                return [CreateResult("No results found", "Please insert a valid JohnnyDecimal ID")];
             }
-            if (string.IsNullOrEmpty(RootFolder) || !Directory.Exists(RootFolder))
-            {
-                return CreateResult("No results found", "Please set the root folder in the plugin settings");
-            }
-
-            var di = new DirectoryInfo(RootFolder);
-            var areaPattern = johnnyDecimalId.AreaGlob; // e.g. "10-19 Foo"
-            var areaDir = di.GetDirectories(areaPattern, SearchOption.TopDirectoryOnly).FirstOrDefault();
-            if (areaDir == null)
-            {
-                return CreateResult("No results found", $"Folder with Area '{areaPattern[..^1]}' not found");
-            }
-            var catPattern = johnnyDecimalId.CategoryGlob; // e.g. "12 Foo"
-            var catDir = areaDir.GetDirectories(catPattern, SearchOption.TopDirectoryOnly).FirstOrDefault();
-            if (catDir == null)
-            {
-                return CreateResult("No results found", $"Folder with Category '{catPattern[..^1]}' not found");
-            }
-            var idPattern = johnnyDecimalId.IdGlob; // e.g. "12.34 Foo"
-            var idDir = catDir.GetDirectories(idPattern, SearchOption.TopDirectoryOnly).FirstOrDefault();
-            if (idDir == null)
-            {
-                return CreateResult("No results found", $"Folder with ID '{idPattern[..^1]}' not found");
-            }
-
-            return CreateResult(idDir.Name, idDir.FullName, idDir.FullName);
+            var resolver = new JohnnyDecimalPathResolver(RootFolder);
+            var pathsResult = resolver.FindPaths(johnnyDecimalId);
+            return string.IsNullOrEmpty(pathsResult.ErrorMessage)
+                ? pathsResult.Directories.Select(x => CreateResult(x.Name, x.FullName, x.FullName)).ToList()
+                : [CreateResult("Error", pathsResult.ErrorMessage)];
         }
 
         /// <summary>
