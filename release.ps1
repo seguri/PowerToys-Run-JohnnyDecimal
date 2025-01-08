@@ -5,10 +5,15 @@ $version = $pluginJson.Version
 $platforms = @("x64", "arm64")
 $excludedFiles = @(
 	"PowerToys.Common.UI.dll"
+	"PowerToys.Common.UI.pdb"
 	"PowerToys.ManagedCommon.dll"
+	"PowerToys.ManagedCommon.pdb"
 	"PowerToys.Settings.UI.Lib.dll"
+	"PowerToys.Settings.UI.Lib.pdb"
 	"Wox.Infrastructure.dll"
+	"Wox.Infrastructure.pdb"
 	"Wox.Plugin.dll"
+	"Wox.Plugin.pdb"
 )
 
 foreach ($platform in $platforms) {
@@ -18,8 +23,6 @@ foreach ($platform in $platforms) {
 	Remove-Item -ErrorAction SilentlyContinue -Path $destinationDir -Recurse -Force
 	Remove-Item -ErrorAction SilentlyContinue -Path $zipPath -Force
 	Copy-Item -Path $sourceDir -Destination $destinationDir -Recurse -Force
-	foreach ($file in $excludedFiles) {
-		Remove-Item -ErrorAction SilentlyContinue -Path "$destinationDir\$file" -Force
-	}
+	Get-ChildItem -Path $destinationDir -Recurse -Include $excludedFiles | Remove-Item -Force
 	Compress-Archive -Path $destinationDir -DestinationPath $zipPath -Force
 }
