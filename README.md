@@ -20,4 +20,11 @@ Set the fullpath to your JohnnyDecimal folder:
 
 Type `jd` followed by the number of the Johnny Decimal folder you want to navigate to.
 
-![Usage](https://github.com/user-attachments/assets/44237758-5df1-4a9f-8320-fc2aaf2e4ac7)
+![jd-2](https://github.com/user-attachments/assets/571f8115-f38e-4927-9258-3f1fa8e95e59)
+
+![jd-21](https://github.com/user-attachments/assets/5dfc0d98-77e4-4fc5-98bd-7d5c8f9edc28)
+
+![jd-210](https://github.com/user-attachments/assets/08f17983-5453-4629-9023-b0cec21b11b5)
+
+![jd-2103](https://github.com/user-attachments/assets/9e43a44b-a1e3-4aae-97ff-915c64831c23)
+
